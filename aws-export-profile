@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+
+# Be strict
+set -e
+set -u
+set -o pipefail
+
+# Display usage
+if [ "${#}" -gt "0" ]; then
+	case "${1}" in
+		-h|--help)
+			cat << EOF
+Usage: aws-export-profile [profile] [credentials] [config]
+
+This bash helper will output AWS export statements of your chosen aws boto profile.
+Wrap this script in \$(aws-export-profile) to export those environment variables.
+
+Optional arguments:
+    [profile]      Boto profile name to export. Default is 'default'
+    [credentials]  Path to your aws credentials file.
+                   Default is ~/.aws/credentials
+    [config]       Path to your aws config file.
+                   If no config file is found, AWS_REGION export will not be available.
+                   Default is ~/.aws/config
+
+Available exports:
+    AWS_ACCESS_KEY_ID
+    AWS_ACCESS_KEY
+    AWS_SECRET_ACCESS_KEY
+    AWS_SECRET_KEY
+    AWS_SESSION_TOKEN
+    AWS_SECURITY_TOKEN
+    AWS_REGION
+
+Examples to show output:
+    aws-export-profile testing
+    aws-export-profile production /jenkins/aws/credentials /jenkins/aws/config
+
+Examples to export:
+    \$(aws-export-profile testing)
+    \$(aws-export-profile production /jenkins/aws/credentials /jenkins/aws/config)
+
+MIT License
+Copyright (c) 2018 cytopia
+EOF
+			;;
+		*)
+	esac
+fi
+
+# Input parameter
+PROFILE="${1:-default}"
+CREDENTIALS="${2:-${HOME}/.aws/credentials}"
+CONFIG="${3:-${HOME}/.aws/config}"
+
+# Available values in credentials file
+aws_access_key_id=
+aws_secret_access_key=
+aws_session_token=
+aws_security_token=
+
+# Available values in config file
+aws_region=
+
+# Test if credentials file is found, otherwise abort
+if [ ! -f "${CREDENTIALS}" ]; then
+	printf "Error, credentials file does not exist: %s\n" "${CREDENTIALS}"
+	exit 1
+fi
+
+# Test if config file is found, otherwise no export of region is available
+if [ ! -f "${CONFIG}" ]; then
+	printf "Warning, config file does not exist: %s\n" "${CONFIG}" >&2
+	printf "Region will not be exported.\n" >&2
+fi
+
+# Trim whitespace
+trim() {
+	local line="${1}"
+	line="${line#"${line%%[![:space:]]*}"}"
+	line="${line%"${line##*[![:space:]]}"}"
+	echo "${line}"
+}
+
+# Extract value from string (Format: NAME = VALUE)
+get_val() {
+	local line="${1}"
+	echo "${line##*=*[[:space:]]}"
+}
+
+# Read region
+if [ -f "${CONFIG}" ]; then
+	section=
+	while read -r line; do
+		# Get section we are currently in
+		if [[ "${line}" =~ ^[[:space:]]*\[profile[[:space:]]+[-_.a-zA-Z0-9]+\][[:space:]]*$ ]]; then
+			section="${line%]}"
+			section="${section#[profile}"
+			section="$( trim "${section}" )"
+		fi
+		# Extract available aws export values
+		if [ "${section}" = "${PROFILE}" ]; then
+			if [[ "${line}" =~ ^\s*region\s*=* ]]; then
+				aws_region="$( get_val "${line}" )"
+			fi
+		fi
+	done < "${CONFIG}"
+fi
+
+# Read credentials
+section=
+while read -r line; do
+	# Get section we are currently in
+	if [[ "${line}" =~ ^[[:space:]]*\[[-_.a-zA-Z0-9]+\][[:space:]]*$ ]]; then
+		section="${line%]}"
+		section="${section#[}"
+	fi
+	# Extract available aws export values
+	if [ "${section}" = "${PROFILE}" ]; then
+		if [[ "${line}" =~ ^\s*aws_access_key_id\s*=* ]]; then
+			aws_access_key_id="$( get_val "${line}" )"
+		fi
+		if [[ "${line}" =~ ^\s*aws_secret_access_key\s*=* ]]; then
+			aws_secret_access_key="$( get_val "${line}" )"
+		fi
+		if [[ "${line}" =~ ^\s*aws_session_token\s*=* ]]; then
+			aws_session_token="$( get_val "${line}" )"
+		fi
+		if [[ "${line}" =~ ^\s*aws_security_token\s*=* ]]; then
+			aws_security_token="$( get_val "${line}" )"
+		fi
+	fi
+done < "${CREDENTIALS}"
+
+# Output exports
+if [ -n "${aws_access_key_id}" ]; then
+	echo "export AWS_ACCESS_KEY_ID=\"${aws_access_key_id}\""
+	echo "export AWS_ACCESS_KEY=\"${aws_access_key_id}\""
+fi
+if [ -n "${aws_secret_access_key}" ]; then
+	echo "export AWS_SECRET_ACCESS_KEY=\"${aws_secret_access_key}\""
+	echo "export AWS_SECRET_KEY=\"${aws_secret_access_key}\""
+fi
+if [ -n "${aws_session_token}" ]; then
+	echo "export AWS_SESSION_TOKEN=\"${aws_session_token}\""
+fi
+if [ -n "${aws_security_token}" ]; then
+	echo "export AWS_SECURITY_TOKEN=\"${aws_security_token}\""
+fi
+if [ -n "${aws_region}" ]; then
+	echo "export AWS_REGION=\"${aws_region}\""
+fi
