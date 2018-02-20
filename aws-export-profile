@@ -8,9 +8,16 @@ set -o pipefail
 # Display usage
 if [ "${#}" -gt "0" ]; then
 	case "${1}" in
+		-v|--version)
+			cat << EOF
+aws-export-profile v0.2
+EOF
+		;;
 		-h|--help)
 			cat << EOF
 Usage: aws-export-profile [profile] [credentials] [config]
+       aws-export-profile --help|-h
+       aws-export-profile --version|-v
 
 This bash helper will output AWS export statements of your chosen aws boto profile.
 Wrap this script in \$(aws-export-profile) to export those environment variables.
@@ -100,7 +107,7 @@ if [ -f "${CONFIG}" ]; then
 		fi
 		# Extract available aws export values
 		if [ "${section}" = "${PROFILE}" ]; then
-			if [[ "${line}" =~ ^\s*region\s*=* ]]; then
+			if [[ "${line}" =~ ^[[:space:]]*region[[:space:]]*=.*$ ]]; then
 				aws_region="$( get_val "${line}" )"
 			fi
 		fi
@@ -117,16 +124,16 @@ while read -r line; do
 	fi
 	# Extract available aws export values
 	if [ "${section}" = "${PROFILE}" ]; then
-		if [[ "${line}" =~ ^\s*aws_access_key_id\s*=* ]]; then
+		if [[ "${line}" =~ ^[[:space:]]*aws_access_key_id[[:space:]]*=.*$ ]]; then
 			aws_access_key_id="$( get_val "${line}" )"
 		fi
-		if [[ "${line}" =~ ^\s*aws_secret_access_key\s*=* ]]; then
+		if [[ "${line}" =~ ^[[:space:]]*aws_secret_access_key[[:space:]]*=.*$ ]]; then
 			aws_secret_access_key="$( get_val "${line}" )"
 		fi
-		if [[ "${line}" =~ ^\s*aws_session_token\s*=* ]]; then
+		if [[ "${line}" =~ ^[[:space:]]*aws_session_token[[:space:]]*=.*$ ]]; then
 			aws_session_token="$( get_val "${line}" )"
 		fi
-		if [[ "${line}" =~ ^\s*aws_security_token\s*=* ]]; then
+		if [[ "${line}" =~ ^[[:space:]]*aws_security_token[[:space:]]*=.*$ ]]; then
 			aws_security_token="$( get_val "${line}" )"
 		fi
 	fi
