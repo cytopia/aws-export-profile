@@ -4,6 +4,9 @@
 
 Wrap the command in `$(aws-export-profile)` to actually export your boto environment variables.
 
+[![Build Status](https://travis-ci.org/cytopia/aws-export-profile.svg?branch=master)](https://travis-ci.org/cytopia/aws-export-profile)
+![Release](https://img.shields.io/github/release/cytopia/aws-export-profile.svg)
+
 
 ## Available exports
 

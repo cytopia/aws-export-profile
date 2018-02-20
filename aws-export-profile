@@ -8,9 +8,16 @@ set -o pipefail
 # Display usage
 if [ "${#}" -gt "0" ]; then
 	case "${1}" in
+		-v|--version)
+			cat << EOF
+aws-export-profile v0.2
+EOF
+		;;
 		-h|--help)
 			cat << EOF
 Usage: aws-export-profile [profile] [credentials] [config]
+       aws-export-profile --help|-h
+       aws-export-profile --version|-v
 
 This bash helper will output AWS export statements of your chosen aws boto profile.
 Wrap this script in \$(aws-export-profile) to export those environment variables.
