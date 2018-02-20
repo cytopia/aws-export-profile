@@ -107,7 +107,7 @@ if [ -f "${CONFIG}" ]; then
 		fi
 		# Extract available aws export values
 		if [ "${section}" = "${PROFILE}" ]; then
-			if [[ "${line}" =~ ^\s*region\s*=* ]]; then
+			if [[ "${line}" =~ ^[[:space:]]*region[[:space:]]*=.*$ ]]; then
 				aws_region="$( get_val "${line}" )"
 			fi
 		fi
@@ -124,16 +124,16 @@ while read -r line; do
 	fi
 	# Extract available aws export values
 	if [ "${section}" = "${PROFILE}" ]; then
-		if [[ "${line}" =~ ^\s*aws_access_key_id\s*=* ]]; then
+		if [[ "${line}" =~ ^[[:space:]]*aws_access_key_id[[:space:]]*=.*$ ]]; then
 			aws_access_key_id="$( get_val "${line}" )"
 		fi
-		if [[ "${line}" =~ ^\s*aws_secret_access_key\s*=* ]]; then
+		if [[ "${line}" =~ ^[[:space:]]*aws_secret_access_key[[:space:]]*=.*$ ]]; then
 			aws_secret_access_key="$( get_val "${line}" )"
 		fi
-		if [[ "${line}" =~ ^\s*aws_session_token\s*=* ]]; then
+		if [[ "${line}" =~ ^[[:space:]]*aws_session_token[[:space:]]*=.*$ ]]; then
 			aws_session_token="$( get_val "${line}" )"
 		fi
-		if [[ "${line}" =~ ^\s*aws_security_token\s*=* ]]; then
+		if [[ "${line}" =~ ^[[:space:]]*aws_security_token[[:space:]]*=.*$ ]]; then
 			aws_security_token="$( get_val "${line}" )"
 		fi
 	fi
