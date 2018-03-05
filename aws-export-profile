@@ -10,7 +10,7 @@ if [ "${#}" -gt "0" ]; then
 	case "${1}" in
 		-v|--version)
 			cat << EOF
-aws-export-profile v0.2
+aws-export-profile v0.3
 EOF
 		;;
 		-h|--help)
@@ -141,19 +141,19 @@ done < "${CREDENTIALS}"
 
 # Output exports
 if [ -n "${aws_access_key_id}" ]; then
-	echo "export AWS_ACCESS_KEY_ID=\"${aws_access_key_id}\""
-	echo "export AWS_ACCESS_KEY=\"${aws_access_key_id}\""
+	echo "export AWS_ACCESS_KEY_ID=${aws_access_key_id}"
+	echo "export AWS_ACCESS_KEY=${aws_access_key_id}"
 fi
 if [ -n "${aws_secret_access_key}" ]; then
-	echo "export AWS_SECRET_ACCESS_KEY=\"${aws_secret_access_key}\""
-	echo "export AWS_SECRET_KEY=\"${aws_secret_access_key}\""
+	echo "export AWS_SECRET_ACCESS_KEY=${aws_secret_access_key}"
+	echo "export AWS_SECRET_KEY=${aws_secret_access_key}"
 fi
 if [ -n "${aws_session_token}" ]; then
-	echo "export AWS_SESSION_TOKEN=\"${aws_session_token}\""
+	echo "export AWS_SESSION_TOKEN=${aws_session_token}"
 fi
 if [ -n "${aws_security_token}" ]; then
-	echo "export AWS_SECURITY_TOKEN=\"${aws_security_token}\""
+	echo "export AWS_SECURITY_TOKEN=${aws_security_token}"
 fi
 if [ -n "${aws_region}" ]; then
-	echo "export AWS_REGION=\"${aws_region}\""
+	echo "export AWS_REGION=${aws_region}"
 fi
