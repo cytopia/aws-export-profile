@@ -36,6 +36,7 @@ Available exports:
     AWS_SECRET_ACCESS_KEY
     AWS_SECRET_KEY
     AWS_SESSION_TOKEN
+    AWS_DELEGATION_TOKEN
     AWS_SECURITY_TOKEN
     AWS_REGION
 
@@ -150,9 +151,11 @@ if [ -n "${aws_secret_access_key}" ]; then
 fi
 if [ -n "${aws_session_token}" ]; then
 	echo "export AWS_SESSION_TOKEN=${aws_session_token}"
+	echo "export AWS_DELEGATION_TOKEN=${aws_session_token}"
 fi
 if [ -n "${aws_security_token}" ]; then
 	echo "export AWS_SECURITY_TOKEN=${aws_security_token}"
+	echo "export AWS_DELEGATION_TOKEN=${aws_security_token}"
 fi
 if [ -n "${aws_region}" ]; then
 	echo "export AWS_REGION=${aws_region}"
