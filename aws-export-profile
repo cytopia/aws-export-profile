@@ -39,6 +39,7 @@ Available exports:
     AWS_DELEGATION_TOKEN
     AWS_SECURITY_TOKEN
     AWS_REGION
+    EC2_URL
 
 Examples to show output:
     aws-export-profile testing
@@ -162,4 +163,5 @@ if [ -n "${aws_security_token}" ]; then
 fi
 if [ -n "${aws_region}" ]; then
 	echo "export AWS_REGION=${aws_region}"
+	echo "export EC2_URL=https://ec2.${aws_region}.amazonaws.com"
 fi
