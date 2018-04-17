@@ -39,6 +39,7 @@ Available exports:
     AWS_DELEGATION_TOKEN
     AWS_SECURITY_TOKEN
     AWS_REGION
+    EC2_URL
 
 Examples to show output:
     aws-export-profile testing
@@ -155,8 +156,12 @@ if [ -n "${aws_session_token}" ]; then
 fi
 if [ -n "${aws_security_token}" ]; then
 	echo "export AWS_SECURITY_TOKEN=${aws_security_token}"
-	echo "export AWS_DELEGATION_TOKEN=${aws_security_token}"
+	# Set DELEGATION_TOKEN only if it wasn't set via session token
+	if [ -z "${aws_session_token}" ]; then
+		echo "export AWS_DELEGATION_TOKEN=${aws_security_token}"
+	fi
 fi
 if [ -n "${aws_region}" ]; then
 	echo "export AWS_REGION=${aws_region}"
+	echo "export EC2_URL=https://ec2.${aws_region}.amazonaws.com"
 fi
