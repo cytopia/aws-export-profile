@@ -97,24 +97,35 @@ AWS_DELEGATION_TOKEN="XXXXXXXXXXXXXXXXx/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/XXXXXXXXX
 AWS_REGION="eu-central-1"
 ```
 
+#### Unset all AWS_ variables
+```bash
+user> $(aws-export-profile -u)
+```
+
 
 ## Usage
 
 ```bash
 Usage: aws-export-profile [profile] [credentials] [config]
+       aws-export-profile --unset, -u
        aws-export-profile --help|-h
        aws-export-profile --version|-v
 
 This bash helper will output AWS export statements of your chosen aws boto profile.
 Wrap this script in $(aws-export-profile) to export those environment variables.
 
-Optional arguments:
+Optional parameter:
     [profile]      Boto profile name to export. Default is 'default'
     [credentials]  Path to your aws credentials file.
                    Default is ~/.aws/credentials
     [config]       Path to your aws config file.
                    If no config file is found, AWS_REGION export will not be available.
                    Default is ~/.aws/config
+
+Arguments:
+    --unset, -u    Unset currently set AWS variables from env
+    --help, -h     Show this help screen
+    --version, -v  Show version
 
 Available exports:
     AWS_ACCESS_KEY_ID
@@ -133,6 +144,9 @@ Examples to show output:
 Examples to export:
     $(aws-export-profile testing)
     $(aws-export-profile production /jenkins/aws/credentials /jenkins/aws/config)
+
+Examples to unset all AWS variables
+    \$(aws-export-profile -u)
 ```
 
 ## License
