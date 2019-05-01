@@ -2,6 +2,8 @@
 
 `aws-export-profile` is a bash script that will output AWS export statements of your chosen aws boto profile. In case you have to manage multiple AWS accounts that rely on different boto profiles, you can *activate* a chosen profile by making it available in your shell environment.
 
+This tool reads credentials from `~/.aws/credentials`. If you are looking for a way to export boto profiles via `aws sts assume-role` instead, have a lookt at **[aws-export-assume-profile](https://github.com/cytopia/aws-export-assume-profile)**.
+
 [![Build Status](https://travis-ci.org/cytopia/aws-export-profile.svg?branch=master)](https://travis-ci.org/cytopia/aws-export-profile)
 ![Release](https://img.shields.io/github/release/cytopia/aws-export-profile.svg)
 
